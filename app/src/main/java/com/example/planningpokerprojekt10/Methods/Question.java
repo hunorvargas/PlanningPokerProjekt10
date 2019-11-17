@@ -1,7 +1,7 @@
 package com.example.planningpokerprojekt10.Methods;
 
 public class Question {
-
+    private String questionIDl;
     private String question;
     private String questionDesc;
 
@@ -21,12 +21,20 @@ public class Question {
         this.questionDesc = questionInf;
     }
 
+    public String getQuestionIDl() {
+        return questionIDl;
+    }
+
+    public void setQuestionIDl(String questionIDl) {
+        this.questionIDl = questionIDl;
+    }
 
     @Override
     public String toString() {
         return "Question{" +
+                "questionIDl='" + questionIDl + '\'' +
                 ", question='" + question + '\'' +
-                ", questionInf='" + questionDesc + '\'' +
+                ", questionDesc='" + questionDesc + '\'' +
                 '}';
     }
 }

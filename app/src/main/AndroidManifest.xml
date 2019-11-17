@@ -20,7 +20,6 @@
         </activity>
         <activity android:name=".Activitys.CreateActivity" />
         <activity android:name=".Activitys.HistoryActivity" />
-        <activity android:name=".Activitys.JoinActivity" />
         <activity android:name=".Activitys.RoomActivity" />
     </application>
 

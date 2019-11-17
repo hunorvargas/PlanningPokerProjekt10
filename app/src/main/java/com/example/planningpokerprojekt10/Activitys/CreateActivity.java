@@ -27,7 +27,7 @@ public class CreateActivity extends AppCompatActivity {
     EditText editTexteditSessionID, editTextQuestion,editTextQuestionDesc,editTextAdminName;
     Button creatSessionButton;
     long maxID=0;
-    private String sessionid="";
+    private String sessionid="",questionID="1";
     final ArrayList<String> sessionIDs = new ArrayList<>();
 
     @Override
@@ -44,6 +44,7 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     private void creatSession() {
+
         creatSessionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -64,8 +65,11 @@ public class CreateActivity extends AppCompatActivity {
 
                     Log.d("create1", "nem kell empty");
                     if(isagoodSessionID()) {
-                    myRef.child("session").child(editTextAdminName.getText().toString()).child(sessionId).child("Questions").child("Question").setValue(question);
-                    myRef.child("session").child(editTextAdminName.getText().toString()).child(sessionId).child("Questions").child("QuestionDesc").setValue(questionDescrpt);
+
+                    Log.d("create1", "questionID:");
+                    myRef.child("Questions").child("valami");
+                    myRef.child("session").child(sessionId).child("Questions").child(questionID).child("Question").setValue(question);
+                    myRef.child("session").child(sessionId).child("Questions").child(questionID).child("QuestionDesc").setValue(questionDescrpt);
 
                     Log.d("create1", "nem kell data added");
                     Toast.makeText(CreateActivity.this, "SessionCreated", Toast.LENGTH_SHORT).show();
@@ -107,8 +111,7 @@ public class CreateActivity extends AppCompatActivity {
         creatSessionButton =  findViewById(R.id.btnC);
         editTextQuestion = findViewById(R.id.editTextQuestion);
         editTextQuestionDesc=findViewById(R.id.questionDescripEditText);
-        editTextAdminName=findViewById(R.id.adminNameEditText);
-        //getsessionids();
+        getsessionids();
     }
 
     public long getMaxID() {

@@ -91,7 +91,7 @@ public class HistoryActivity extends AppCompatActivity {
                     Log.d("create", "getSessionData users.");
                     session.setUsers(users);
                     session.setSessionID(sessionid);
-                    session.setQuestion(question);
+                   // session.setQuestion(question);
                     sessions.add(session);
                     i++;
                 }

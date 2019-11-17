@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Session {
 
     private String sessionID;
-    private Question question;
+    private ArrayList<Question> questions;
     private ArrayList<User> users;
 
     public String getSessionID() {
@@ -16,12 +16,12 @@ public class Session {
         this.sessionID = sessionID;
     }
 
-    public Question getQuestion() {
-        return question;
+    public ArrayList<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestions(ArrayList<Question> questions) {
+        this.questions = questions;
     }
 
     public ArrayList<User> getUsers() {
@@ -36,19 +36,8 @@ public class Session {
     public String toString() {
         return "Session{" +
                 "sessionID='" + sessionID + '\'' +
-                ",question=" + question +
+                ", questions=" + questions +
                 ", users=" + users +
                 '}';
     }
-
-    /*public static ArrayList<Session> createSessionsList(int numOfSessions) {
-        ArrayList<Session> Sessions = new ArrayList<Session>();
-
-        for (int i = 1; i <= numOfSessions; i++) {
-            Sessions.add(new Session());
-        }
-
-        return Sessions;
-    }*/
-
 }
