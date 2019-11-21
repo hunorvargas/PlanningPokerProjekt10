@@ -1,4 +1,4 @@
-package com.example.planningpokerprojekt10.Activitys;
+package com.example.planningpokerprojekt10.Methods;
 
 public class Admin {
     private  String adminName;
