@@ -59,11 +59,11 @@ public class CreateActivity extends AppCompatActivity {
                     if(isagoodSessionID()) {
 
 
-                    myRef.child("session").child("groups").child(sessionId).child("Questions").child(questionID).child("Question").setValue(question);
-                    myRef.child("session").child("groups").child(sessionId).child("Questions").child(questionID).child("QuestionDesc").setValue(questionDescrpt);
-                    myRef.child("session").child("groups").child(sessionId).child("Questions").child(questionID).child("QuestionVisibility").setValue("false");
+                    myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("Question").setValue(question);
+                    myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionDesc").setValue(questionDescrpt);
+                    myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionVisibility").setValue("false");
 
-                    myRef.child("session").child("Admins").child(admin.getAdminName()).child(sessionId).setValue(sessionId);
+                    myRef.child("Session").child("Admins").child(admin.getAdminName()).child(sessionId).setValue(sessionId);
 
                     Log.d("create1", "nem kell data added");
 
@@ -132,7 +132,7 @@ public class CreateActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference  myRef = database.getReference().child("session").child("groups");
+        DatabaseReference  myRef = database.getReference().child("Session").child("Groups");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d("create1", "isempty");
 
                                 if(isagoodadminname(adminName)){
-                                    myRef.child("session").child("Admins").child(adminName).setValue(adminName);
+
+                                    myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
 
                                 }
                                 else
@@ -121,10 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onClick(View v) {
 
                     final String adminName = adminname.getText().toString().trim();
-
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference myRef = database.getReference();
-
                     if(!adminName.isEmpty()){
                         Log.d("create1", "nameisempy");
 
@@ -170,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("session").child("Admins");
+        DatabaseReference myRef = database.getReference().child("Session").child("Admins");
         Log.d("create1", "isagoodadminname");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
