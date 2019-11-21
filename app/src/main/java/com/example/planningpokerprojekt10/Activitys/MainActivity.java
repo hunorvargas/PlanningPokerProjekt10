@@ -8,9 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.planningpokerprojekt10.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     final String adminName = adminname.getText().toString();
 
-                    Log.d("create1", "creatadminbutton:" + adminName);
-
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     final DatabaseReference myRef = database.getReference();
 
@@ -94,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     setToastText("Admin Name is Busy!");
                     } else {
                         setToastText("Admin Name is Empty!");
-                        //  Toast.makeText(MainActivity.this, "Admin Name is Empty!", Toast.LENGTH_LONG).show();
                     }alertDialog.dismiss();
                 }
             });
@@ -135,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         if(!isagoodadminname(adminName)){
                             Log.d("create1", "joadmin");
+                            intentCreate.putExtra("AdminName",adminName);
                             startActivity(intentCreate);
                         }else{
                             setToastText("This Admin Name not exsist!");
@@ -142,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     } else {
                        setToastText("Admin Name is Empty!");
-                        // Toast.makeText(MainActivity.this, "Admin Name is Empty!", Toast.LENGTH_LONG).show();
                     }
                     alertDialog.dismiss();
                 }
