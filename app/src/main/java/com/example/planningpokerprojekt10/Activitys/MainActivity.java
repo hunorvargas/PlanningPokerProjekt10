@@ -3,6 +3,7 @@ package com.example.planningpokerprojekt10.Activitys;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,11 +12,20 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.planningpokerprojekt10.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Intent intentCreate;
-    private Button creatSessionButton, staticsSessionButton;
+    private Button creatSessionButton, staticsSessionButton,createAdminButton;
+    ArrayList<String> admins = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +42,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         staticsSessionButton = (Button) findViewById(R.id.buttonStatics);
         staticsSessionButton.setOnClickListener(this);
+
+        createAdminButton= (Button) findViewById(R.id.buttonCreateAdmin);
+        createAdminButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
 
 
-        if (v == creatSessionButton) {
+        if (v == createAdminButton) {
 
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            View view = getLayoutInflater().inflate(R.layout.custom_dialog, null);
+            View view = getLayoutInflater().inflate(R.layout.createadmin_dialog, null);
 
-            final EditText adminpassword = (EditText) view.findViewById(R.id.adminPasswordEditText);
+            final EditText adminname =view.findViewById(R.id.createAdminNameEditText);
             Button cancelButton = view.findViewById(R.id.dialogCancelButton);
-            Button loginaAdminButton = view.findViewById(R.id.dialogLoginButton);
+            Button createAdminButton2 = view.findViewById(R.id.createAdminButton);
 
             alert.setView(view);
 
@@ -59,24 +72,129 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
 
-            loginaAdminButton.setOnClickListener(new View.OnClickListener() {
+            createAdminButton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String adminpass = adminpassword.getText().toString();
-                    if (adminpass.equals("a")) {
-                        startActivity(intentCreate);
-                    } else {
-                        Toast.makeText(MainActivity.this, "Wrong AdminPassword!", Toast.LENGTH_LONG).show();
-                    }
 
+                    final String adminName = adminname.getText().toString();
+
+                    Log.d("create1", "creatadminbutton:" + adminName);
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference();
+
+                    if(!adminName.isEmpty()){
+                        Log.d("create1", "isempty");
+
+                                if(isagoodadminname(adminName)){
+                                    myRef.child("session").child("Admins").child(adminName).setValue(adminName);
+
+                                }
+                                else
+                                    setToastText("Admin Name is Busy!");
+                    } else {
+                        setToastText("Admin Name is Empty!");
+                        //  Toast.makeText(MainActivity.this, "Admin Name is Empty!", Toast.LENGTH_LONG).show();
+                    }alertDialog.dismiss();
                 }
             });
             alertDialog.show();
         }
 
-        if (v == staticsSessionButton) {
+       if (v == creatSessionButton) {
+            final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            View view = getLayoutInflater().inflate(R.layout.loginadmin_dialog, null);
 
+            final EditText adminname =view.findViewById(R.id.loginAdminNameEditText);
+            Button cancelButton = view.findViewById(R.id.adminLoginCancelButton);
+            Button loginAdminButton = view.findViewById(R.id.loginadminButton);
+
+            alert.setView(view);
+
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+
+            loginAdminButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    final String adminName = adminname.getText().toString().trim();
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference();
+
+                    if(!adminName.isEmpty()){
+                        Log.d("create1", "nameisempy");
+
+                        if(!isagoodadminname(adminName)){
+                            Log.d("create1", "joadmin");
+                            startActivity(intentCreate);
+                        }else{
+                            setToastText("This Admin Name not exsist!");
+                        }
+
+                    } else {
+                       setToastText("Admin Name is Empty!");
+                        // Toast.makeText(MainActivity.this, "Admin Name is Empty!", Toast.LENGTH_LONG).show();
+                    }
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.show();
 
         }
+    }
+
+    private boolean isagoodadminname(String adminName) {
+        int i = 0;
+        while (i < admins.size()) {
+            Log.d("create", "Whiile ID"+admins.get(i));
+            if(admins.get(i).equals(adminName)){
+                return false;
+            }
+            i++;
+        }
+        Log.d("create", "kell session nincs");
+        return true;
+
+    }
+
+    private void setToastText(String text){
+        Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("session").child("Admins");
+        Log.d("create1", "isagoodadminname");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("create1", "Adminname Snap");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String adminname=datas.getKey();
+                    admins.add(adminname);
+                    Log.d("create1", "Adminname: " + adminname);
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

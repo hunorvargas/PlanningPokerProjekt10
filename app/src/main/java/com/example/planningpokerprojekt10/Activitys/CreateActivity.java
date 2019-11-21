@@ -8,16 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.planningpokerprojekt10.R;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -28,7 +26,8 @@ public class CreateActivity extends AppCompatActivity {
     Button creatSessionButton;
     long maxID=0;
     private String sessionid="",questionID="1";
-    final ArrayList<String> sessionIDs = new ArrayList<>();
+    ArrayList<String> sessionIDs = new ArrayList<>();
+     ArrayList<String> admins = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +66,7 @@ public class CreateActivity extends AppCompatActivity {
                     if(isagoodSessionID()) {
 
                     Log.d("create1", "questionID:");
-                    myRef.child("Questions").child("valami");
+                   // myRef.child("Questions").child("valami");
                     myRef.child("session").child(sessionId).child("Questions").child(questionID).child("Question").setValue(question);
                     myRef.child("session").child(sessionId).child("Questions").child(questionID).child("QuestionDesc").setValue(questionDescrpt);
 
@@ -124,43 +123,25 @@ public class CreateActivity extends AppCompatActivity {
 
     public void getsessionids(){
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference  myRef = database.getReference();
+    DatabaseReference  myRef = database.getReference().child("session").child("Admins");
 
-        myRef.addChildEventListener((new ChildEventListener() {
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            //Get the node from the datasnapshot
-            String myParentNode = dataSnapshot.getKey();
-            for (DataSnapshot child: dataSnapshot.getChildren())
-            {
-                String key = child.getKey().toString();
-                sessionIDs.add(key);
-                Log.d("create", "creatID:"+ key);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("create1", "Adminname Snap");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String adminname=datas.getKey();
+                    admins.add(adminname);
+                    Log.d("create1", "Adminname: " + adminname);
+                }
             }
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+        });
+    }
 
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    }));
-}
 
     public String getSessionid() {
         return sessionid;

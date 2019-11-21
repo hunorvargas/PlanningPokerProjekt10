@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="15dp">
-
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AdminLogin"
+        android:text="Admin Login"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/adminPasswordEditText"
+        android:id="@+id/loginAdminNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Enter Admin Password"
-        android:inputType="textPassword"
-        android:textSize="14sp" />
+        android:hint="Your Admin Name"
+        android:inputType="textPersonName" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,19 +25,18 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/dialogCancelButton"
+            android:id="@+id/adminLoginCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginRight="20dp"
-            android:text="Cancel" />
+            android:layout_weight="1"
+            android:text="@android:string/cancel" />
 
         <Button
-            android:id="@+id/dialogLoginButton"
+            android:id="@+id/loginadminButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Login" />
     </LinearLayout>
-
 </LinearLayout>
