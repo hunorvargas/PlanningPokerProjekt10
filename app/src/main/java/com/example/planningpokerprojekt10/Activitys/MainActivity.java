@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.planningpokerprojekt10.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,9 +23,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Intent intentCreate;
+    private Intent intentCreate,intentRoom;
     private Button creatSessionButton, staticsSessionButton,createAdminButton;
     ArrayList<String> admins = new ArrayList<>();
+    private String sessionid="";
+    ArrayList<String> sessionIDs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         intentCreate = new Intent(MainActivity.this, CreateActivity.class);
-
+        intentRoom= new Intent(MainActivity.this, RoomActivity.class);
 
 
         creatSessionButton = (Button) findViewById(R.id.buttonCreate);
@@ -85,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 if(isagoodadminname(adminName)){
 
                                     myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
-
+                                    finish();
+                                    startActivity(getIntent());
                                 }
                                 else
                                     setToastText("Admin Name is Busy!");
@@ -142,6 +147,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             alertDialog.show();
 
         }
+       if(v==staticsSessionButton){
+
+           final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+           View view = getLayoutInflater().inflate(R.layout.session_dialog, null);
+
+           final EditText sessionAdminName =view.findViewById(R.id.sessionAdminNameEditText);
+           final EditText sessionIDedittxt =view.findViewById(R.id.sessionSessionIdEditText);
+           Button sessionCancelButton = view.findViewById(R.id.sessionCancelButton);
+           Button sessionLoginAdminButton = view.findViewById(R.id.sessionAdminLoginButton);
+
+           alert.setView(view);
+
+           final AlertDialog alertDialog = alert.create();
+           alertDialog.setCanceledOnTouchOutside(false);
+
+           sessionCancelButton.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   alertDialog.dismiss();
+               }
+           });
+
+           sessionLoginAdminButton.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+
+                   final String adminName = sessionAdminName.getText().toString().trim();
+                   final String sessionID = sessionIDedittxt.getText().toString().trim();
+                   setSessionid(sessionID);
+
+                   if(!adminName.isEmpty() &&!sessionID.isEmpty()){
+                       Log.d("create1", "nameisempty");
+
+                       if(!isagoodadminname(adminName) && isagoodSessionID() ){
+                           Log.d("create1", "joadmin");
+                           intentRoom.putExtra("AdminName",adminName);
+                           intentRoom.putExtra("SessionID",sessionID);
+                           startActivity(intentRoom);
+                       }else{
+                           setToastText("This Admin Name or Session not exist!");
+                       }
+
+                   } else {
+                       setToastText("Admin Name or SesisonID is Empty!");
+                   }
+                   alertDialog.dismiss();
+               }
+           });
+           alertDialog.show();
+
+       }
     }
 
     private boolean isagoodadminname(String adminName) {
@@ -156,6 +212,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("create", "kell session nincs");
         return true;
 
+    }
+    private boolean isagoodSessionID() {
+        Log.d("create", "kell isagoodsession");
+
+        int i = 0;
+        while (i < sessionIDs.size()) {
+            Log.d("create", "Whiile ID"+sessionIDs.get(i));
+            if(sessionIDs.get(i).equals(getSessionid())){
+
+                setToastText("This SessionID is busy!");
+                return false;
+            }
+            i++;
+        }
+        Log.d("create", "kell session nincs");
+        return true;
     }
 
     private void setToastText(String text){
@@ -188,5 +260,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    public String getSessionid() {
+        return sessionid;
+    }
+
+    public void setSessionid(String sessionid) {
+        this.sessionid = sessionid;
     }
 }
