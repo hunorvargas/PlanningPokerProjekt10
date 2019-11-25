@@ -3,14 +3,23 @@ package com.example.planningpokerprojekt10.Activitys;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.planningpokerprojekt10.Fragments.QuestionActivateFragment;
+import com.example.planningpokerprojekt10.Fragments.RoomFragment;
+import com.example.planningpokerprojekt10.Fragments.StaticsFragment;
 import com.example.planningpokerprojekt10.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +35,11 @@ public class RoomActivity extends AppCompatActivity {
 
     EditText questionEditText,questionDescEditText;
     Button addnewQuestionButton;
+    private BottomNavigationView navigationView;
+    private FrameLayout frameLayout;
+    private QuestionActivateFragment questionActivateFragment;
+    private StaticsFragment staticsFragment;
+    private RoomFragment roomFragment;
     String sessionID="",questionID="";
     ArrayList<String> questionIDs = new ArrayList<>();
 
@@ -35,6 +49,27 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         init();
+
+    }
+
+
+
+    private void init() {
+
+        frameLayout=findViewById(R.id.framelayout);
+        navigationView=findViewById(R.id.navigationbottom);
+
+        addnewQuestionButton=findViewById(R.id.addnewQuestionButton);
+
+        questionActivateFragment=new QuestionActivateFragment();
+        staticsFragment=new StaticsFragment();
+        roomFragment=new RoomFragment();
+
+        Intent intent= getIntent();
+
+        setSessionID(intent.getStringExtra("SessionID"));
+        setFragment(roomFragment);
+        navigationViewlistener();
         addnewQuestion();
 
     }
@@ -43,8 +78,8 @@ public class RoomActivity extends AppCompatActivity {
         addnewQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newQuestion=questionEditText.getText().toString().trim();
-                String newQuestionDesc=questionDescEditText.getText().toString().trim();
+                String newQuestion=roomFragment.getQuestion();
+                String newQuestionDesc=roomFragment.getQuestionDesc();
                 if(!newQuestion.isEmpty() && !newQuestionDesc.isEmpty()){
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -55,14 +90,14 @@ public class RoomActivity extends AppCompatActivity {
                     setQuestionID(String.valueOf(questionID+1));
 
                     myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getQuestionID())
-                    .child("Question").setValue(newQuestion);
+                            .child("Question").setValue(newQuestion);
                     myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
-                           .child("QuestionDesc").setValue(newQuestionDesc);
+                            .child("QuestionDesc").setValue(newQuestionDesc);
                     myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
                             .child("QuestionVisibility").setValue("false");
 
                     Log.d("create1", "NextQuestionID: " + getQuestionID());
-                   setToastText("New Question added succes!");
+                    setToastText("New Question added succes!");
                 }
                 else{
                     setToastText("Please complet all fields!");
@@ -72,17 +107,36 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    private void navigationViewlistener() {
+        navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-    private void init() {
+                switch ((menuItem.getItemId())){
+                    case R.id.roomIcon:
+                        setFragment(roomFragment);
+                        addnewQuestionButton.setVisibility(View.VISIBLE);
+                        addnewQuestionButton.setText("Add Question");
+                        return true;
+                    case R.id.activateQuestionIcon:
+                        setFragment(questionActivateFragment);
+                        addnewQuestionButton.setVisibility(View.VISIBLE);
+                        addnewQuestionButton.setText("Activate Question");
+                        return true;
+                    case R.id.viewStaticsIcon:
+                        setFragment(staticsFragment);
+                        addnewQuestionButton.setVisibility(View.GONE);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
 
-        questionEditText=findViewById(R.id.questionEditText);
-        questionDescEditText=findViewById(R.id.questionDescEditText);
-        addnewQuestionButton=findViewById(R.id.addnewQuestionButton);
-
-        Intent intent= getIntent();
-
-        setSessionID(intent.getStringExtra("SessionID"));
-
+    private void setFragment(Fragment fragments) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.framelayout,fragments);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -113,6 +167,8 @@ public class RoomActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     public String getSessionID() {
         return sessionID;

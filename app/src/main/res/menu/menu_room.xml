@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item
+            android:id="@+id/roomIcon"
+            android:icon="@drawable/baseline_home_black_24dp"
+            android:title="Room" />
+        <item
+            android:id="@+id/activateQuestionIcon"
+            android:icon="@drawable/baseline_create_black_24dp"
+            android:title="ActivateQuestion" />
+        <item
+            android:id="@+id/viewStaticsIcon"
+            android:icon="@drawable/baseline_sort_black_24dp"
+            android:title="ViewStatics" />
+    </menu>

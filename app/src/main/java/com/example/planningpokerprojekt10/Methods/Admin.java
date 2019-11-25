@@ -1,7 +1,18 @@
 package com.example.planningpokerprojekt10.Methods;
 
+import java.util.ArrayList;
+
 public class Admin {
     private  String adminName;
+    ArrayList<String> groupIDs = new ArrayList<>();
+
+    public ArrayList<String> getGroupIDs() {
+        return groupIDs;
+    }
+
+    public void setGroupIDs(ArrayList<String> groupIDs) {
+        this.groupIDs = groupIDs;
+    }
 
     public String getAdminName() {
         return adminName;

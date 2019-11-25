@@ -1,73 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     tools:context="com.example.planningpokerprojekt10.Activitys.RoomActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigationbottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#14A795"
+        app:menu="@menu/menu_room">
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    <FrameLayout
+        android:id="@+id/framelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#B6DDB6"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewvote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="center"
-            android:text="AdminRoom"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#131413"
-            android:textSize="30sp" />
+    </FrameLayout>
 
-        <EditText
-            android:id="@+id/questionEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:hint="New Question"
-            android:inputType="textPersonName"
-            android:textAlignment="center" />
+    <Button
+        android:id="@+id/addnewQuestionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="0dp"
+        android:background="#00BCD4"
+        android:text="Add Question"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/questionDescEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:hint="Question Desc."
-            android:inputType="textPersonName"
-            android:textAlignment="center" />
-
-        <Button
-            android:id="@+id/addnewQuestionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:background="#00BCD4"
-            android:text="Add Question"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/novoteButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:background="#00BCD4"
-            android:text="View Results"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
