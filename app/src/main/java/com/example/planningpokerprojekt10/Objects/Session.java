@@ -1,4 +1,4 @@
-package com.example.planningpokerprojekt10.Methods;
+package com.example.planningpokerprojekt10.Objects;
 
 import java.util.ArrayList;
 

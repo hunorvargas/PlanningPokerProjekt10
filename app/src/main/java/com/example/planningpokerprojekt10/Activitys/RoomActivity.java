@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.planningpokerprojekt10.Fragments.QuestionActivateFragment;
 import com.example.planningpokerprojekt10.Fragments.RoomFragment;
 import com.example.planningpokerprojekt10.Fragments.StaticsFragment;
+import com.example.planningpokerprojekt10.Objects.Question;
 import com.example.planningpokerprojekt10.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +43,8 @@ public class RoomActivity extends AppCompatActivity {
     private RoomFragment roomFragment;
     String sessionID="",questionID="";
     ArrayList<String> questionIDs = new ArrayList<>();
+    ArrayList<Question> questions = new ArrayList<>();
+    Question question;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,7 @@ public class RoomActivity extends AppCompatActivity {
         setFragment(roomFragment);
         navigationViewlistener();
         addnewQuestion();
-
+        question=new Question();
     }
 
     private void addnewQuestion() {
@@ -121,10 +124,13 @@ public class RoomActivity extends AppCompatActivity {
                     case R.id.activateQuestionIcon:
                         setFragment(questionActivateFragment);
                         addnewQuestionButton.setVisibility(View.VISIBLE);
+                        questionActivateFragment.setQuestions(questions);
+                        questionActivateFragment.setSessionID(sessionID);
                         addnewQuestionButton.setText("Activate Question");
                         return true;
                     case R.id.viewStaticsIcon:
                         setFragment(staticsFragment);
+
                         addnewQuestionButton.setVisibility(View.GONE);
                         return true;
                 }
@@ -143,11 +149,11 @@ public class RoomActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef1 = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
         Log.d("create1", "Question ID");
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -157,6 +163,83 @@ public class RoomActivity extends AppCompatActivity {
                     questionIDs.add(questionid);
                     setQuestionID(questionid);
                     Log.d("create1", "QuestionIDSnap: " + questionid);
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        DatabaseReference  myRef = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d("create1", "Questions");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                    String questionID=datas.getKey();
+                    //questions.add(questionID);
+                    question.setID(questionID);
+
+                    Log.d("create1", "QuestionNr: " + questionID);
+                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("Question");
+                    myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            question.setQuestion(question1);
+
+                            Log.d("create1", "Question: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef3 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("QuestionDesc");
+                    myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            question.setQuestionDesc(question1);
+
+                            Log.d("create1", "QuestionDesc: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef4 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("QuestionVisibility");
+                    myRef4.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "QuestionVisibility: " + question1);
+                            question.setQuestionVisibility(question1);
+                            questions.add(question);
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
 
             }
@@ -189,5 +272,7 @@ public class RoomActivity extends AppCompatActivity {
     private void setToastText(String text){
         Toast.makeText(RoomActivity.this, text, Toast.LENGTH_LONG).show();
     }
+
+
 }
 

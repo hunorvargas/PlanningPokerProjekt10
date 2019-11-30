@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.planningpokerprojekt10.Methods.Admin;
+import com.example.planningpokerprojekt10.Objects.Admin;
 import com.example.planningpokerprojekt10.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
