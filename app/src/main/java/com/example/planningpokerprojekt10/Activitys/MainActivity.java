@@ -28,14 +28,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button creatSessionButton, staticsSessionButton,createAdminButton;
     ArrayList<String> admins = new ArrayList<>();
     private String sessionid="";
-
     ArrayList<Admin> adminss = new ArrayList<>();
-    ArrayList<String> adminsID = new ArrayList<>();
+
+    private int i=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         intentCreate = new Intent(MainActivity.this, CreateActivity.class);
         intentRoom= new Intent(MainActivity.this, RoomActivity.class);
@@ -204,23 +205,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private boolean isagooddata(String adminName, String sessionID) {
-        Log.d("create1", "isagoodata");
+        Log.d("create3", "isagoodata");
         int i = 0;
         int j = 0;
-
+        Log.d("create3", "adminss size: " +adminss.size());
         while (i < adminss.size()) {
+
             Admin admin;
+
             ArrayList<String> adminIDs;
 
             admin=adminss.get(i);
-            Log.d("create1", "Whiile admin: "+admin);
+            Log.d("create3", "Whiile admin: " +i + " " +admin.toString());
             if(admin.getAdminName().equals(adminName)){
 
-                adminIDs=admin.getGroupIDs();
-                Log.d("create1", "adminIDs size: "+adminIDs.size());
+                adminIDs=adminss.get(i).getGroupIDs();
+                Log.d("create3", "adminIDs size: "+adminIDs);
 
                 while (j < adminIDs.size()){
-                    Log.d("create1", "Whiile j ID: "+adminIDs.get(j));
+                    Log.d("create3", "Whiile j ID: "+adminIDs.get(j));
                     if(adminIDs.get(j).equals(sessionID)){
                         return true;
                     }
@@ -230,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             i++;
         }
-        Log.d("create1", "kell admin nincs");
+        Log.d("create3", "kell admin nincs");
         return false;
     }
 
@@ -252,34 +255,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
     }
 
+    public int getI() {
+        return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference().child("Session").child("Admins");
-        Log.d("create1", "isagoodadminname");
+        Log.d("create2", "isagoodadminname");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                String adminName = " ";
                 Log.d("create1", "Adminname Snap");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
-                    Admin newAdmin=new Admin();
 
+                    ArrayList<String> adminsID = new ArrayList<>();
                     for (DataSnapshot datas2: datas.getChildren()){
                         String adminIDG=datas2.getKey();
                         adminsID.add(adminIDG);
-                        Log.d("create1", "AdminnameSnapID: " + adminIDG);
+                        Log.d("create2", "Adminname: " + adminIDG);
                     }
-                    String adminname=datas.getKey();
-                    newAdmin.setAdminName(adminname);
-                    newAdmin.setGroupIDs(adminsID);
+                    adminName=datas.getKey();
+                    Log.d("create2", "AdminnameSnapID: " + adminName);
+                    Log.d("create2", "AdminnameSnapID: " + adminsID);
+
+                    Admin newAdmin = new Admin (adminName,adminsID);
+
+                    Log.d("create2", "NewAdminName: " + newAdmin.getAdminName());
+                    Log.d("create2", "NewAdminIDs: " + newAdmin.getGroupIDs());
                     adminss.add(newAdmin);
-                      admins.add(adminname);
-                    Log.d("create1", "AdminnameSnap: " + adminname);
+                    admins.add(adminName);
+
+
+                    Log.d("create2", "AdminnameSnap: " + adminss.get(getI()).toString()+" "+ getI());
+                  //  adminsID.clear();
+                    setI(++i);
                 }
+
+
+
+
 
             }
             @Override
@@ -287,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
 
     }
 

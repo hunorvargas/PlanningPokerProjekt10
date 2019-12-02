@@ -44,7 +44,7 @@ public class RoomActivity extends AppCompatActivity {
     String sessionID="",questionID="";
     ArrayList<String> questionIDs = new ArrayList<>();
     ArrayList<Question> questions = new ArrayList<>();
-    Question question;
+   // Question question;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class RoomActivity extends AppCompatActivity {
         setFragment(roomFragment);
         navigationViewlistener();
         addnewQuestion();
-        question=new Question();
+
     }
 
     private void addnewQuestion() {
@@ -125,6 +125,7 @@ public class RoomActivity extends AppCompatActivity {
                         setFragment(questionActivateFragment);
                         addnewQuestionButton.setVisibility(View.VISIBLE);
                         questionActivateFragment.setQuestions(questions);
+                        Log.d("create1", "activatefragment: " + questions.get(1).getQuestion() + questions.get(2) + questions.get(3));
                         questionActivateFragment.setSessionID(sessionID);
                         addnewQuestionButton.setText("Activate Question");
                         return true;
@@ -182,18 +183,23 @@ public class RoomActivity extends AppCompatActivity {
 
                 Log.d("create1", "Questions");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
+
+
+                    final Question newQuestion = new Question();
+
                     String questionID=datas.getKey();
                     //questions.add(questionID);
-                    question.setID(questionID);
+                    newQuestion.setID(questionID);
 
                     Log.d("create1", "QuestionNr: " + questionID);
                     DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
                             child(getSessionID()).child("Questions").child(questionID).child("Question");
+
                     myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String question1 = dataSnapshot.getValue(String.class);
-                            question.setQuestion(question1);
+                            newQuestion.setQuestion(question1);
 
                             Log.d("create1", "Question: " + question1);
                         }
@@ -206,11 +212,12 @@ public class RoomActivity extends AppCompatActivity {
 
                     DatabaseReference  myRef3 = database.getReference().child("Session").child("Groups").
                             child(getSessionID()).child("Questions").child(questionID).child("QuestionDesc");
+
                     myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String question1 = dataSnapshot.getValue(String.class);
-                            question.setQuestionDesc(question1);
+                            newQuestion.setQuestionDesc(question1);
 
                             Log.d("create1", "QuestionDesc: " + question1);
                         }
@@ -223,14 +230,16 @@ public class RoomActivity extends AppCompatActivity {
 
                     DatabaseReference  myRef4 = database.getReference().child("Session").child("Groups").
                             child(getSessionID()).child("Questions").child(questionID).child("QuestionVisibility");
+
                     myRef4.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String question1 = dataSnapshot.getValue(String.class);
                             Log.d("create1", "QuestionVisibility: " + question1);
-                            question.setQuestionVisibility(question1);
-                            questions.add(question);
-
+                            newQuestion.setQuestionVisibility(question1);
+                            Log.d("create1", "Question: " + question1 + " " + newQuestion);
+                            questions.add(newQuestion);
+                            Log.d("create1", "Question: " + question1 + " " + questions.toString());
 
                         }
 
