@@ -62,7 +62,7 @@ public class CreateActivity extends AppCompatActivity {
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("Question").setValue(question);
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionDesc").setValue(questionDescrpt);
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionVisibility").setValue("false");
-
+                    myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionTime").setValue(" ");
                     myRef.child("Session").child("Admins").child(admin.getAdminName()).child(sessionId).setValue(sessionId);
 
                     Log.d("create1", "nem kell data added");

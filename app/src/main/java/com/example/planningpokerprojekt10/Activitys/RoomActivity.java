@@ -33,18 +33,15 @@ import static java.lang.Integer.parseInt;
 
 public class RoomActivity extends AppCompatActivity {
 
-
-    EditText questionEditText,questionDescEditText;
-    Button addnewQuestionButton;
     private BottomNavigationView navigationView;
     private FrameLayout frameLayout;
     private QuestionActivateFragment questionActivateFragment;
     private StaticsFragment staticsFragment;
     private RoomFragment roomFragment;
-    String sessionID="",questionID="";
+    private String sessionID="",questionID="";
     ArrayList<String> questionIDs = new ArrayList<>();
     ArrayList<Question> questions = new ArrayList<>();
-   // Question question;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +59,6 @@ public class RoomActivity extends AppCompatActivity {
         frameLayout=findViewById(R.id.framelayout);
         navigationView=findViewById(R.id.navigationbottom);
 
-        addnewQuestionButton=findViewById(R.id.addnewQuestionButton);
-
         questionActivateFragment=new QuestionActivateFragment();
         staticsFragment=new StaticsFragment();
         roomFragment=new RoomFragment();
@@ -72,45 +67,18 @@ public class RoomActivity extends AppCompatActivity {
 
         setSessionID(intent.getStringExtra("SessionID"));
         setFragment(roomFragment);
+        roomFragment.setSessionID(getSessionID());
+        roomFragment.setQuestionID(getQuestionID());
+
         navigationViewlistener();
-        addnewQuestion();
+
 
     }
 
-    private void addnewQuestion() {
-        addnewQuestionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newQuestion=roomFragment.getQuestion();
-                String newQuestionDesc=roomFragment.getQuestionDesc();
-                if(!newQuestion.isEmpty() && !newQuestionDesc.isEmpty()){
 
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference();
-
-                    int questionID=parseInt(getQuestionID());
-                    Log.d("create1", "Int QuestionID: " + questionID);
-                    setQuestionID(String.valueOf(questionID+1));
-
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getQuestionID())
-                            .child("Question").setValue(newQuestion);
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
-                            .child("QuestionDesc").setValue(newQuestionDesc);
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
-                            .child("QuestionVisibility").setValue("false");
-
-                    Log.d("create1", "NextQuestionID: " + getQuestionID());
-                    setToastText("New Question added succes!");
-                }
-                else{
-                    setToastText("Please complet all fields!");
-                }
-
-            }
-        });
-    }
 
     private void navigationViewlistener() {
+
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -118,21 +86,16 @@ public class RoomActivity extends AppCompatActivity {
                 switch ((menuItem.getItemId())){
                     case R.id.roomIcon:
                         setFragment(roomFragment);
-                        addnewQuestionButton.setVisibility(View.VISIBLE);
-                        addnewQuestionButton.setText("Add Question");
+                        roomFragment.setQuestionID(questionID);
                         return true;
                     case R.id.activateQuestionIcon:
                         setFragment(questionActivateFragment);
-                        addnewQuestionButton.setVisibility(View.VISIBLE);
                         questionActivateFragment.setQuestions(questions);
-                        Log.d("create1", "activatefragment: " + questions.get(1).getQuestion() + questions.get(2) + questions.get(3));
                         questionActivateFragment.setSessionID(sessionID);
-                        addnewQuestionButton.setText("Activate Question");
                         return true;
                     case R.id.viewStaticsIcon:
                         setFragment(staticsFragment);
 
-                        addnewQuestionButton.setVisibility(View.GONE);
                         return true;
                 }
                 return false;
@@ -237,9 +200,27 @@ public class RoomActivity extends AppCompatActivity {
                             String question1 = dataSnapshot.getValue(String.class);
                             Log.d("create1", "QuestionVisibility: " + question1);
                             newQuestion.setQuestionVisibility(question1);
-                            Log.d("create1", "Question: " + question1 + " " + newQuestion);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef5 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("QuestionTime");
+
+                    myRef5.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String questiontime = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "QuestionTime: " + questiontime);
+                            newQuestion.setQuestionTime(questiontime);
+                            Log.d("create1", "Question: " + questiontime + " " + newQuestion);
                             questions.add(newQuestion);
-                            Log.d("create1", "Question: " + question1 + " " + questions.toString());
+                            Log.d("create1", "Question: " + questiontime + " " + questions.toString());
 
                         }
 

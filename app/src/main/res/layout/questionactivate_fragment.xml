@@ -19,6 +19,16 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/questionList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="368dp" />
+
+    <Button
+        android:id="@+id/activateQuestionButton"
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:background="#009688"
+        android:text="Activate Question"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

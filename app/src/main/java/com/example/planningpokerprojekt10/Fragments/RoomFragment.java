@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,15 +23,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RoomFragment extends Fragment {
 
     EditText questionEditText,questionDescEditText;
-
+    Button addnewQuestionButton;
     private View mView;
-    String sessionID="",questionID="";
+    private String sessionID="",questionID="";
     ArrayList<String> questionIDs = new ArrayList<>();
 
 
@@ -41,10 +44,47 @@ public class RoomFragment extends Fragment {
 
         questionDescEditText=mView.findViewById(R.id.questionDescEditText);
         questionEditText=mView.findViewById(R.id.questionEditText);
+        addnewQuestionButton=mView.findViewById(R.id.addnewQuestionButton);
 
+        addnewQuestion();
         return mView;
-    }
 
+
+    }
+    private void addnewQuestion() {
+        addnewQuestionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newQuestion=questionEditText.getText().toString().trim();
+                String newQuestionDesc=questionDescEditText.getText().toString().trim();
+                if(!newQuestion.isEmpty() && !newQuestionDesc.isEmpty()){
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference();
+                    Log.d("create5", "eddig jo: " + getQuestionID());
+                   int questionID=parseInt(getQuestionID());
+                    Log.d("create1", "Int QuestionID: " + questionID);
+                    setQuestionID(String.valueOf(questionID+1));
+
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getQuestionID())
+                            .child("Question").setValue(newQuestion);
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
+                            .child("QuestionDesc").setValue(newQuestionDesc);
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
+                            .child("QuestionVisibility").setValue("false");
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
+                            .child("QuestionTime").setValue(" ");
+
+                    Log.d("create1", "NextQuestionID: " + getQuestionID());
+                    setToastText("New Question added succes!");
+                }
+                else{
+                    setToastText("Please complet all fields!");
+                }
+
+            }
+        });
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
@@ -107,7 +147,7 @@ public class RoomFragment extends Fragment {
     }
 
     private void setToastText(String text){
-        Toast.makeText(getActivity(),"Text!",Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(),text,Toast.LENGTH_LONG).show();
     }
 
 }
