@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class CreateActivity extends AppCompatActivity {
 
-    EditText editTexteditSessionID, editTextQuestion,editTextQuestionDesc,editTextAdminName;
+    EditText editTexteditSessionID, editTextQuestion,editTextQuestionDesc,editMaxUserNameNumber;
     Button creatSessionButton;
     private String sessionid="",questionID="1";
     private Admin admin;
@@ -48,12 +48,15 @@ public class CreateActivity extends AppCompatActivity {
                 String question = editTextQuestion.getText().toString().trim();
                 String sessionId = editTexteditSessionID.getText().toString().trim();
                 String questionDescrpt=editTextQuestionDesc.getText().toString().trim();
+                String maxUserNumber=editMaxUserNameNumber.getText().toString().trim();
+
                 setSessionid(editTexteditSessionID.getText().toString().trim());
+
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference();
 
-                if(!question.isEmpty()){
+                if(!question.isEmpty() && !maxUserNumber.isEmpty() ){
 
                     Log.d("create1", "nem kell empty");
                     if(isagoodSessionID()) {
@@ -64,6 +67,7 @@ public class CreateActivity extends AppCompatActivity {
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionVisibility").setValue("false");
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionTime").setValue(" ");
                     myRef.child("Session").child("Admins").child(admin.getAdminName()).child(sessionId).setValue(sessionId);
+                    myRef.child("Session").child("Groups").child(sessionId).child("Users").child("MaxUsersNumber").setValue(maxUserNumber);
 
                     Log.d("create1", "nem kell data added");
 
@@ -74,7 +78,7 @@ public class CreateActivity extends AppCompatActivity {
                 else {
                     Log.d("create1", "nem kell else");
 
-                    setToastText("Complete the Question field!");
+                    setToastText("Please complet all field!");
 
                 }
             }
@@ -107,7 +111,7 @@ public class CreateActivity extends AppCompatActivity {
         creatSessionButton =  findViewById(R.id.btnC);
         editTextQuestion = findViewById(R.id.editTextQuestion);
         editTextQuestionDesc=findViewById(R.id.questionDescripEditText);
-
+        editMaxUserNameNumber=findViewById(R.id.maxUserNumber);
         admin = new Admin();
 
         Intent intent= getIntent();

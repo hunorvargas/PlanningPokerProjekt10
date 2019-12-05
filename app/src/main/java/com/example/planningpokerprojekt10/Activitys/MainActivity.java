@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d("create1", "isempty");
 
                                 if(isagoodadminname(adminName)){
-
+                                    setToastText("Welcome " + adminName +"!");
                                     myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
                                     finish();
                                     startActivity(getIntent());
