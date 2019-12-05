@@ -1,6 +1,9 @@
 package com.example.planningpokerprojekt10.Fragments;
 
 
+import android.app.TimePickerDialog;
+import android.text.format.DateFormat;
+import android.widget.TimePicker;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import android.widget.EditText;
+
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +29,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.planningpokerprojekt10.Activitys.RoomActivity;
 import com.example.planningpokerprojekt10.Objects.Question;
 import com.example.planningpokerprojekt10.R;
 import com.google.firebase.database.DatabaseReference;
@@ -44,8 +46,9 @@ public class QuestionActivateFragment extends Fragment {
     private  RecyclerView mrecyclerView;
     private View mView;
     private ArrayList<Question> questions = new ArrayList<>();
-    private String SessionID,activeQuestionID,pickedTime,datePickedQuestionID;
+    private String SessionID,activeQuestionID,pickedTime,pickedDate,datePickedQuestionID;
     private int justOneSwitch=0;
+    private boolean isModification=false;
     private Button activateQuestion;
     private Calendar myCalendar = Calendar.getInstance();
 
@@ -75,26 +78,24 @@ public class QuestionActivateFragment extends Fragment {
         activateQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // setToastText("Please select Just One Visibility Switch!");
-              //  Toast.makeText(getActivity(),"Please select Just One Visibility Switch!",Toast.LENGTH_LONG).show();
-                if(justOneSwitch==1){
+                if(isModification==true) {
+                    if (justOneSwitch == 1) {
 
 
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference();
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference();
 
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("true");
+                        myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("true");
 
-                }
-                else
-                if(justOneSwitch<=0){
+                    } else if (justOneSwitch <= 0) {
 
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference();
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference();
 
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("false");
-                    setToastText("Please select Just One Visibility Switch!");
-                   // Toast.makeText(getActivity(),"Please select Just One Visibility Switch!",Toast.LENGTH_LONG).show();
+                        myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("false");
+                        setToastText("Please select Just One Visibility Switch!");
+                        // Toast.makeText(getActivity(),"Please select Just One Visibility Switch!",Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
@@ -164,22 +165,18 @@ public class QuestionActivateFragment extends Fragment {
            holder.visibilitySwitch.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-
+                    isModification=true;
                    if(holder.visibilitySwitch.isChecked()){
                        ++justOneSwitch;
                        setActiveQuestionID(questions.get(position).getID());
                        setToastText("Question Activated");
-                       //Toast.makeText(getActivity(),"Question Activated",Toast.LENGTH_SHORT).show();
                    }
                    else {
                        --justOneSwitch;
 
                      setActiveQuestionID(questions.get(position).getID());
                        setToastText("Question DezActivated");
-                       //Toast.makeText(getActivity(),"Question DezActivated",Toast.LENGTH_SHORT).show();
-                      // Log.d("create4", "QuestionID False: " + questions.get(position).getID() );
                    }
-                  // Log.d("create4", "QuestionVisibility True: " + justOneSwitch );
                }
            });
 
@@ -188,6 +185,7 @@ public class QuestionActivateFragment extends Fragment {
                 public void onClick(View v) {
 
                     setDatePickedQuestionID(questions.get(position).getID());
+
                     new DatePickerDialog(getActivity(), setdate, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
 
                 }
@@ -225,16 +223,43 @@ public class QuestionActivateFragment extends Fragment {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             String myFormat = "dd/MM/yy"; //Change as you need
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            String time=(sdf.format(myCalendar.getTime()));
-            setPickedTime(time);
+            String date=(sdf.format(myCalendar.getTime()));
 
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference();
+            setTime();
+            setPickedDate(date);
+            setToastText("Your selected date: "+ date);
 
-            myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getDatePickedQuestionID()).child("QuestionTime").setValue(getPickedTime());
-            setToastText("Your selected date: "+ time);
         }
     };
+ public void setTime(){
+    Calendar calendar = Calendar.getInstance();
+        int HOUR = calendar.get(Calendar.HOUR);
+        int MINUTE = calendar.get(Calendar.MINUTE);
+        boolean is24HourFormat = DateFormat.is24HourFormat(getActivity());
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                Log.d("create5", "onTimeSet: " + hour + minute);
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.set(Calendar.HOUR, hour);
+                calendar1.set(Calendar.MINUTE, minute);
+                String timetext = DateFormat.format("HH:mm", calendar1).toString();
+                setPickedTime(timetext);
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference();
+
+                myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").
+                        child(getDatePickedQuestionID()).child("QuestionTime").setValue(getPickedDate()+ "/" +getPickedTime());
+                setToastText("Your selected time is: "+timetext );
+
+            }
+        }, HOUR, MINUTE, is24HourFormat);
+
+        timePickerDialog.show();
+    }
+
 
     public String getActiveQuestionID() {
         return activeQuestionID;
@@ -278,5 +303,13 @@ public class QuestionActivateFragment extends Fragment {
 
     private void setToastText(String text){
         Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+    }
+
+    public String getPickedDate() {
+        return pickedDate;
+    }
+
+    public void setPickedDate(String pickedDate) {
+        this.pickedDate = pickedDate;
     }
 }

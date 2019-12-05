@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -29,8 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static java.lang.Integer.parseInt;
-
 public class RoomActivity extends AppCompatActivity {
 
     private BottomNavigationView navigationView;
@@ -38,7 +33,7 @@ public class RoomActivity extends AppCompatActivity {
     private QuestionActivateFragment questionActivateFragment;
     private StaticsFragment staticsFragment;
     private RoomFragment roomFragment;
-    private String sessionID="",questionID="";
+    private String sessionID="",questionID="",currentFragment="";
     ArrayList<String> questionIDs = new ArrayList<>();
     ArrayList<Question> questions = new ArrayList<>();
 
@@ -66,9 +61,16 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent= getIntent();
 
         setSessionID(intent.getStringExtra("SessionID"));
-        setFragment(roomFragment);
-        roomFragment.setSessionID(getSessionID());
-        roomFragment.setQuestionID(getQuestionID());
+
+            setFragment(roomFragment);
+            roomFragment.setSessionID(getSessionID());
+            roomFragment.setQuestionID(getQuestionID());
+            setCurrentFragment("roomFragment");
+
+            roomFragment.setSessionID(getSessionID());
+            roomFragment.setQuestionID(getQuestionID());
+            setCurrentFragment("roomFragment");
+            setFragment(roomFragment);
 
         navigationViewlistener();
 
@@ -87,16 +89,22 @@ public class RoomActivity extends AppCompatActivity {
                     case R.id.roomIcon:
                         setFragment(roomFragment);
                         roomFragment.setQuestionID(questionID);
+                        setCurrentFragment("roomFragment");
                         return true;
                     case R.id.activateQuestionIcon:
                         setFragment(questionActivateFragment);
                         questionActivateFragment.setQuestions(questions);
                         questionActivateFragment.setSessionID(sessionID);
+                        setCurrentFragment("questionActivateFragment");
                         return true;
                     case R.id.viewStaticsIcon:
                         setFragment(staticsFragment);
-
+                        setCurrentFragment("staticsFragment");
                         return true;
+                    case R.id.refreshIcon:
+                                  Intent intent = getIntent();
+                                  finish();
+                                  startActivity(intent);
                 }
                 return false;
             }
@@ -151,7 +159,6 @@ public class RoomActivity extends AppCompatActivity {
                     final Question newQuestion = new Question();
 
                     String questionID=datas.getKey();
-                    //questions.add(questionID);
                     newQuestion.setID(questionID);
 
                     Log.d("create1", "QuestionNr: " + questionID);
@@ -263,6 +270,12 @@ public class RoomActivity extends AppCompatActivity {
         Toast.makeText(RoomActivity.this, text, Toast.LENGTH_LONG).show();
     }
 
+    public String getCurrentFragment() {
+        return currentFragment;
+    }
 
+    public void setCurrentFragment(String currentFragment) {
+        this.currentFragment = currentFragment;
+    }
 }
 

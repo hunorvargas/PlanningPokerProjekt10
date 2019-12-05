@@ -14,4 +14,8 @@
             android:id="@+id/viewStaticsIcon"
             android:icon="@drawable/baseline_sort_black_24dp"
             android:title="ViewStatics" />
-    </menu>
+    <item
+        android:id="@+id/refreshIcon"
+        android:icon="@drawable/baseline_update_black_24dp"
+        android:title="Refresh" />
+</menu>
