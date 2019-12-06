@@ -271,10 +271,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DatabaseReference myRef = database.getReference().child("Session").child("Admins");
         Log.d("create2", "isagoodadminname");
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String adminName = " ";
+                adminss.clear();
                 Log.d("create1", "Adminname Snap");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
 
@@ -296,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     admins.add(adminName);
 
 
-                    Log.d("create2", "AdminnameSnap: " + adminss.get(getI()).toString()+" "+ getI());
+                 //   Log.d("create2", "AdminnameSnap: " + adminss.get(getI()).toString()+" "+ getI());
                   //  adminsID.clear();
                     setI(++i);
                 }

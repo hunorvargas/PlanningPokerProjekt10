@@ -31,8 +31,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.planningpokerprojekt10.Objects.Question;
 import com.example.planningpokerprojekt10.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,7 @@ public class QuestionActivateFragment extends Fragment {
     private  RecyclerView mrecyclerView;
     private View mView;
     private ArrayList<Question> questions = new ArrayList<>();
+    ArrayList<String> questionIDs = new ArrayList<>();
     private String SessionID,activeQuestionID,pickedTime,pickedDate,datePickedQuestionID;
     private int justOneSwitch=0;
     private boolean isModification=false;
@@ -55,30 +59,23 @@ public class QuestionActivateFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-
        mView= inflater.inflate(R.layout.questionactivate_fragment,container,false);
 
        mrecyclerView=mView.findViewById(R.id.questionList);
        activateQuestion = mView.findViewById(R.id.activateQuestionButton);
 
        mrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-       mrecyclerView.setAdapter(new RecyclerViewAdapter(questions));
-
-        activateQuestion();
-
-
+       getDatas();
         return mView;
     }
-
-
-
-
 
     private void activateQuestion() {
         activateQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isModification==true) {
+                Log.d("create5", "IsModificaton: " +isModification );
+                if(isModification) {
+                    Log.d("create5", "IsModificaton Justone: " + justOneSwitch );
                     if (justOneSwitch == 1) {
 
 
@@ -87,15 +84,20 @@ public class QuestionActivateFragment extends Fragment {
 
                         myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("true");
 
-                    } else if (justOneSwitch <= 0) {
-
+                    } else
+                        Log.d("create5", "IsModificaton Justone: " + justOneSwitch );
+                        if (justOneSwitch <= 0) {
+                            justOneSwitch=0;
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference();
 
                         myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("false");
-                        setToastText("Please select Just One Visibility Switch!");
+
                         // Toast.makeText(getActivity(),"Please select Just One Visibility Switch!",Toast.LENGTH_LONG).show();
                     }
+                        else {
+                            setToastText("Please select Just One Visibility Switch!");
+                        }
                 }
             }
 
@@ -117,7 +119,7 @@ public class QuestionActivateFragment extends Fragment {
         }
 
         public RecylerViewHolder(LayoutInflater inflater,ViewGroup container){
-            super(inflater.inflate(R.layout.querstion_view,container,false));
+            super(inflater.inflate(R.layout.question_view,container,false));
 
             mCardView=itemView.findViewById(R.id.cardViewid);
             questionTextView=itemView.findViewById(R.id.textViewQuestion);
@@ -161,6 +163,7 @@ public class QuestionActivateFragment extends Fragment {
             else {
                 holder.visibilitySwitch.setChecked(true);
                 ++justOneSwitch;
+                Log.d("create5", "JustOneSwitch: " +justOneSwitch );
             }
            holder.visibilitySwitch.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -168,12 +171,13 @@ public class QuestionActivateFragment extends Fragment {
                     isModification=true;
                    if(holder.visibilitySwitch.isChecked()){
                        ++justOneSwitch;
+                       Log.d("create5", "JustOneSwitchIscheked: " +justOneSwitch );
                        setActiveQuestionID(questions.get(position).getID());
                        setToastText("Question Activated");
                    }
                    else {
                        --justOneSwitch;
-
+                       Log.d("create5", "JustOneSwitch: " +justOneSwitch );
                      setActiveQuestionID(questions.get(position).getID());
                        setToastText("Question DezActivated");
                    }
@@ -260,6 +264,139 @@ public class QuestionActivateFragment extends Fragment {
         timePickerDialog.show();
     }
 
+    public void getDatas(){
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef1 = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
+        Log.d("create1", "Question ID");
+
+        myRef1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                questionIDs.clear();
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+
+                    String questionid=datas.getKey();
+                    questionIDs.add(questionid);
+                   // setQuestionID(questionid);
+                    Log.d("create1", "QuestionIDSnap: " + questionid);
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        DatabaseReference  myRef = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                questions.clear();
+                Log.d("create1", "Questions");
+                for(DataSnapshot datas: dataSnapshot.getChildren()){
+
+
+                    final Question newQuestion = new Question();
+
+                    String questionID=datas.getKey();
+                    newQuestion.setID(questionID);
+
+                    Log.d("create1", "QuestionNr: " + questionID);
+                    DatabaseReference  myRef2 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("Question");
+
+                    myRef2.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            newQuestion.setQuestion(question1);
+
+                            Log.d("create1", "Question: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef3 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("QuestionDesc");
+
+                    myRef3.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            newQuestion.setQuestionDesc(question1);
+
+                            Log.d("create1", "QuestionDesc: " + question1);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef4 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("QuestionVisibility");
+
+                    myRef4.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String question1 = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "QuestionVisibility: " + question1);
+                            newQuestion.setQuestionVisibility(question1);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    DatabaseReference  myRef5 = database.getReference().child("Session").child("Groups").
+                            child(getSessionID()).child("Questions").child(questionID).child("QuestionTime");
+
+                    myRef5.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String questiontime = dataSnapshot.getValue(String.class);
+                            Log.d("create1", "QuestionTime: " + questiontime);
+                            newQuestion.setQuestionTime(questiontime);
+                            Log.d("create1", "Question: " + questiontime + " " + newQuestion);
+                            questions.add(newQuestion);
+                            Log.d("create1", "Question: " + questiontime + " " + questions.toString());
+                            mrecyclerView.setAdapter(new RecyclerViewAdapter(questions));
+                            activateQuestion();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
+
+
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     public String getActiveQuestionID() {
         return activeQuestionID;
@@ -267,14 +404,6 @@ public class QuestionActivateFragment extends Fragment {
 
     public void setActiveQuestionID(String activeQuestionID) {
         this.activeQuestionID = activeQuestionID;
-    }
-
-    public ArrayList<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(ArrayList<Question> questions) {
-        this.questions = questions;
     }
 
     public String getSessionID() {

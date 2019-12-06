@@ -30,7 +30,7 @@ import static java.lang.Integer.parseInt;
  */
 public class RoomFragment extends Fragment {
 
-    EditText questionEditText,questionDescEditText;
+    EditText questionEditText,questionDescEditText,maxUserVoteNumberEditText;
     Button addnewQuestionButton;
     private View mView;
     private String sessionID="",questionID="";
@@ -45,6 +45,7 @@ public class RoomFragment extends Fragment {
         questionDescEditText=mView.findViewById(R.id.questionDescEditText);
         questionEditText=mView.findViewById(R.id.questionEditText);
         addnewQuestionButton=mView.findViewById(R.id.addnewQuestionButton);
+        maxUserVoteNumberEditText=mView.findViewById(R.id.maxUserVoreNumberEditText);
 
         addnewQuestion();
         return mView;
@@ -57,7 +58,9 @@ public class RoomFragment extends Fragment {
             public void onClick(View v) {
                 String newQuestion=questionEditText.getText().toString().trim();
                 String newQuestionDesc=questionDescEditText.getText().toString().trim();
-                if(!newQuestion.isEmpty() && !newQuestionDesc.isEmpty()){
+                String maxVoteNum=maxUserVoteNumberEditText.getText().toString().trim();
+
+                if(!newQuestion.isEmpty() && !newQuestionDesc.isEmpty() &&!maxVoteNum.isEmpty()){
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference();
@@ -66,14 +69,11 @@ public class RoomFragment extends Fragment {
                     Log.d("create1", "Int QuestionID: " + questionID);
                     setQuestionID(String.valueOf(questionID+1));
 
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getQuestionID())
-                            .child("Question").setValue(newQuestion);
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
-                            .child("QuestionDesc").setValue(newQuestionDesc);
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
-                            .child("QuestionVisibility").setValue("false");
-                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID()))
-                            .child("QuestionTime").setValue(" ");
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getQuestionID()).child("Question").setValue(newQuestion);
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID())).child("QuestionDesc").setValue(newQuestionDesc);
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID())).child("QuestionVisibility").setValue("false");
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID())).child("QuestionTime").setValue(" ");
+                    myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID())).child("Results").child("MaxUserVoteNumber").setValue(maxVoteNum);
 
                     Log.d("create1", "NextQuestionID: " + getQuestionID());
                     setToastText("New Question added succes!");
@@ -90,15 +90,6 @@ public class RoomFragment extends Fragment {
 
     }
 
-    public String getQuestion(){
-        String question = questionEditText.getText().toString().trim();
-        return question;
-    }
-    public String getQuestionDesc(){
-        String questionDesc = questionDescEditText.getText().toString().trim();
-        return questionDesc;
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -107,10 +98,10 @@ public class RoomFragment extends Fragment {
         DatabaseReference myRef = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
         Log.d("create1", "Question ID");
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                questionIDs.clear();
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
 
                     String questionid=datas.getKey();

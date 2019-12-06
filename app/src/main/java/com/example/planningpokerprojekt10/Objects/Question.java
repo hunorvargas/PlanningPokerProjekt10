@@ -63,9 +63,11 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "question='" + question + '\'' +
+                ", ID='" + ID + '\'' +
                 ", questionDesc='" + questionDesc + '\'' +
                 ", questionVisibility='" + questionVisibility + '\'' +
                 ", questionTime='" + questionTime + '\'' +
+                ", users=" + users +
                 '}';
     }
 }

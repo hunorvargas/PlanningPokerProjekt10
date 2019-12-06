@@ -138,10 +138,10 @@ public class CreateActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference  myRef = database.getReference().child("Session").child("Groups");
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                sessionIDs.clear();
                 Log.d("create1", "SessionIDSnap");
                 for(DataSnapshot datas: dataSnapshot.getChildren()){
                     String sessionID=datas.getKey();
