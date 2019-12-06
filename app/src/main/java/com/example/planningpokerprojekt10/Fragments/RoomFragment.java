@@ -30,44 +30,44 @@ import static java.lang.Integer.parseInt;
  */
 public class RoomFragment extends Fragment {
 
-    EditText questionEditText,questionDescEditText,maxUserVoteNumberEditText;
+    EditText questionEditText, questionDescEditText, maxUserVoteNumberEditText;
     Button addnewQuestionButton;
-    private View mView;
-    private String sessionID="",questionID="";
     ArrayList<String> questionIDs = new ArrayList<>();
-
+    private View mView;
+    private String sessionID = "", questionID = "";
 
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mView = inflater.inflate(R.layout.room_fragment,container,false);
+        mView = inflater.inflate(R.layout.room_fragment, container, false);
 
-        questionDescEditText=mView.findViewById(R.id.questionDescEditText);
-        questionEditText=mView.findViewById(R.id.questionEditText);
-        addnewQuestionButton=mView.findViewById(R.id.addnewQuestionButton);
-        maxUserVoteNumberEditText=mView.findViewById(R.id.maxUserVoreNumberEditText);
+        questionDescEditText = mView.findViewById(R.id.questionDescEditText);
+        questionEditText = mView.findViewById(R.id.questionEditText);
+        addnewQuestionButton = mView.findViewById(R.id.addnewQuestionButton);
+        maxUserVoteNumberEditText = mView.findViewById(R.id.maxUserVoreNumberEditText);
 
         addnewQuestion();
         return mView;
 
 
     }
+
     private void addnewQuestion() {
         addnewQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newQuestion=questionEditText.getText().toString().trim();
-                String newQuestionDesc=questionDescEditText.getText().toString().trim();
-                String maxVoteNum=maxUserVoteNumberEditText.getText().toString().trim();
+                String newQuestion = questionEditText.getText().toString().trim();
+                String newQuestionDesc = questionDescEditText.getText().toString().trim();
+                String maxVoteNum = maxUserVoteNumberEditText.getText().toString().trim();
 
-                if(!newQuestion.isEmpty() && !newQuestionDesc.isEmpty() &&!maxVoteNum.isEmpty()){
+                if (!newQuestion.isEmpty() && !newQuestionDesc.isEmpty() && !maxVoteNum.isEmpty()) {
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference();
                     Log.d("create5", "eddig jo: " + getQuestionID());
-                   int questionID=parseInt(getQuestionID());
+                    int questionID = parseInt(getQuestionID());
                     Log.d("create1", "Int QuestionID: " + questionID);
-                    setQuestionID(String.valueOf(questionID+1));
+                    setQuestionID(String.valueOf(questionID + 1));
 
                     myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getQuestionID()).child("Question").setValue(newQuestion);
                     myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(String.valueOf(getQuestionID())).child("QuestionDesc").setValue(newQuestionDesc);
@@ -77,14 +77,14 @@ public class RoomFragment extends Fragment {
 
                     Log.d("create1", "NextQuestionID: " + getQuestionID());
                     setToastText("New Question added succes!");
-                }
-                else{
+                } else {
                     setToastText("Please complet all fields!");
                 }
 
             }
         });
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
@@ -102,15 +102,16 @@ public class RoomFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 questionIDs.clear();
-                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                for (DataSnapshot datas : dataSnapshot.getChildren()) {
 
-                    String questionid=datas.getKey();
+                    String questionid = datas.getKey();
                     questionIDs.add(questionid);
                     setQuestionID(questionid);
                     Log.d("create1", "QuestionIDSnap: " + questionid);
                 }
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -118,7 +119,6 @@ public class RoomFragment extends Fragment {
         });
 
     }
-
 
 
     public String getSessionID() {
@@ -137,8 +137,8 @@ public class RoomFragment extends Fragment {
         this.questionID = questionID;
     }
 
-    private void setToastText(String text){
-        Toast.makeText(getActivity(),text,Toast.LENGTH_LONG).show();
+    private void setToastText(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
     }
 
 }

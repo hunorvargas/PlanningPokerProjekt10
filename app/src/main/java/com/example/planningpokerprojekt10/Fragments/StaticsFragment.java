@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -132,7 +133,6 @@ public class StaticsFragment extends Fragment {
 
     public void getDatas(){
 
-
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef1 = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
         Log.d("create2", "Question ID");
@@ -188,8 +188,6 @@ public class StaticsFragment extends Fragment {
                                                         maxVoteNum=datas.getValue().toString();
                                                     }
                                                 }
-                                             //   Log.d("create2", "MaxVoteNUm: "+ datas.getValue().toString());
-
                                             }
                                             question.setUsers(results);
                                             questions.add(question);
@@ -224,9 +222,7 @@ public class StaticsFragment extends Fragment {
                                                     Log.d("create2", "CallRecycleviewDateTIme: " + question.getUsers());
                                                 }
                                             }
-
                                         }
-
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -236,10 +232,7 @@ public class StaticsFragment extends Fragment {
                                 }
                                 Log.d("create2", "QuestionNr: " + questionChild);
                             }
-
-
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -247,20 +240,12 @@ public class StaticsFragment extends Fragment {
                     });
 
                 }
-
-
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-    }
-
-    public String getCurrentDateTime() {
-        return currentDateTime;
     }
 
     public void setCurrentDateTime(String currentDateTime) {

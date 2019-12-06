@@ -24,13 +24,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Intent intentCreate,intentRoom;
-    private Button creatSessionButton, staticsSessionButton,createAdminButton;
     ArrayList<String> admins = new ArrayList<>();
-    private String sessionid="";
     ArrayList<Admin> adminss = new ArrayList<>();
-
-    private int i=0;
+    private Intent intentCreate, intentRoom;
+    private Button creatSessionButton, staticsSessionButton, createAdminButton;
+    private String sessionid = "";
+    private int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +38,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         intentCreate = new Intent(MainActivity.this, CreateActivity.class);
-        intentRoom= new Intent(MainActivity.this, RoomActivity.class);
+        intentRoom = new Intent(MainActivity.this, RoomActivity.class);
 
 
-        creatSessionButton = (Button) findViewById(R.id.buttonCreate);
+        creatSessionButton = findViewById(R.id.buttonCreate);
         creatSessionButton.setOnClickListener(this);
 
 
-        staticsSessionButton = (Button) findViewById(R.id.buttonStatics);
+        staticsSessionButton = findViewById(R.id.buttonStatics);
         staticsSessionButton.setOnClickListener(this);
 
-        createAdminButton= (Button) findViewById(R.id.buttonCreateAdmin);
+        createAdminButton = findViewById(R.id.buttonCreateAdmin);
         createAdminButton.setOnClickListener(this);
     }
 
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             View view = getLayoutInflater().inflate(R.layout.createadmin_dialog, null);
 
-            final EditText adminname =view.findViewById(R.id.createAdminNameEditText);
+            final EditText adminname = view.findViewById(R.id.createAdminNameEditText);
             Button cancelButton = view.findViewById(R.id.dialogCancelButton);
             Button createAdminButton2 = view.findViewById(R.id.createAdminButton);
 
@@ -87,30 +86,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     final DatabaseReference myRef = database.getReference();
 
-                    if(!adminName.isEmpty()){
+                    if (!adminName.isEmpty()) {
                         Log.d("create1", "isempty");
 
-                                if(isagoodadminname(adminName)){
-                                    setToastText("Welcome " + adminName +"!");
-                                    myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
-                                    finish();
-                                    startActivity(getIntent());
-                                }
-                                else
-                                    setToastText("Admin Name is Busy!");
+                        if (isagoodadminname(adminName)) {
+                            setToastText("Welcome " + adminName + "!");
+                            myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
+                            finish();
+                            startActivity(getIntent());
+                        } else
+                            setToastText("Admin Name is Busy!");
                     } else {
                         setToastText("Admin Name is Empty!");
-                    }alertDialog.dismiss();
+                    }
+                    alertDialog.dismiss();
                 }
             });
             alertDialog.show();
         }
 
-       if (v == creatSessionButton) {
+        if (v == creatSessionButton) {
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             View view = getLayoutInflater().inflate(R.layout.loginadmin_dialog, null);
 
-            final EditText adminname =view.findViewById(R.id.loginAdminNameEditText);
+            final EditText adminname = view.findViewById(R.id.loginAdminNameEditText);
             Button cancelButton = view.findViewById(R.id.adminLoginCancelButton);
             Button loginAdminButton = view.findViewById(R.id.loginadminButton);
 
@@ -131,19 +130,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onClick(View v) {
 
                     final String adminName = adminname.getText().toString().trim();
-                    if(!adminName.isEmpty()){
+                    if (!adminName.isEmpty()) {
                         Log.d("create1", "nameisempy");
 
-                        if(!isagoodadminname(adminName)){
+                        if (!isagoodadminname(adminName)) {
                             Log.d("create1", "joadmin");
-                            intentCreate.putExtra("AdminName",adminName);
+                            intentCreate.putExtra("AdminName", adminName);
                             startActivity(intentCreate);
-                        }else{
+                        } else {
                             setToastText("This Admin Name not exsist!");
                         }
 
                     } else {
-                       setToastText("Admin Name is Empty!");
+                        setToastText("Admin Name is Empty!");
                     }
                     alertDialog.dismiss();
                 }
@@ -151,80 +150,80 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             alertDialog.show();
 
         }
-       if(v==staticsSessionButton){
+        if (v == staticsSessionButton) {
 
-           final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-           View view = getLayoutInflater().inflate(R.layout.session_dialog, null);
+            final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            View view = getLayoutInflater().inflate(R.layout.session_dialog, null);
 
-           final EditText sessionAdminName =view.findViewById(R.id.sessionAdminNameEditText);
-           final EditText sessionIDedittxt =view.findViewById(R.id.sessionSessionIdEditText);
-           Button sessionCancelButton = view.findViewById(R.id.sessionCancelButton);
-           Button sessionLoginAdminButton = view.findViewById(R.id.sessionAdminLoginButton);
+            final EditText sessionAdminName = view.findViewById(R.id.sessionAdminNameEditText);
+            final EditText sessionIDedittxt = view.findViewById(R.id.sessionSessionIdEditText);
+            Button sessionCancelButton = view.findViewById(R.id.sessionCancelButton);
+            Button sessionLoginAdminButton = view.findViewById(R.id.sessionAdminLoginButton);
 
-           alert.setView(view);
+            alert.setView(view);
 
-           final AlertDialog alertDialog = alert.create();
-           alertDialog.setCanceledOnTouchOutside(false);
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
 
-           sessionCancelButton.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   alertDialog.dismiss();
-               }
-           });
+            sessionCancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
 
-           sessionLoginAdminButton.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
+            sessionLoginAdminButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                   final String adminName = sessionAdminName.getText().toString().trim();
-                   final String sessionID = sessionIDedittxt.getText().toString().trim();
-                   setSessionid(sessionID);
+                    final String adminName = sessionAdminName.getText().toString().trim();
+                    final String sessionID = sessionIDedittxt.getText().toString().trim();
+                    setSessionid(sessionID);
 
-                   if(!adminName.isEmpty() &&!sessionID.isEmpty()){
-                       Log.d("create1", "nameisempty");
+                    if (!adminName.isEmpty() && !sessionID.isEmpty()) {
+                        Log.d("create1", "nameisempty");
 
-                       if(isagooddata(adminName,sessionID)){
-                           Log.d("create1", "joadmin");
-                           intentRoom.putExtra("AdminName",adminName);
-                           intentRoom.putExtra("SessionID",sessionID);
-                           startActivity(intentRoom);
-                       }else{
-                           setToastText("This Admin Name or Session not exist!");
-                       }
+                        if (isagooddata(adminName, sessionID)) {
+                            Log.d("create1", "joadmin");
+                            intentRoom.putExtra("AdminName", adminName);
+                            intentRoom.putExtra("SessionID", sessionID);
+                            startActivity(intentRoom);
+                        } else {
+                            setToastText("This Admin Name or Session not exist!");
+                        }
 
-                   } else {
-                       setToastText("Admin Name or SesisonID is Empty!");
-                   }
-                   alertDialog.dismiss();
-               }
-           });
-           alertDialog.show();
+                    } else {
+                        setToastText("Admin Name or SesisonID is Empty!");
+                    }
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.show();
 
-       }
+        }
     }
 
     private boolean isagooddata(String adminName, String sessionID) {
         Log.d("create3", "isagoodata");
         int i = 0;
         int j = 0;
-        Log.d("create3", "adminss size: " +adminss.size());
+        Log.d("create3", "adminss size: " + adminss.size());
         while (i < adminss.size()) {
 
             Admin admin;
 
             ArrayList<String> adminIDs;
 
-            admin=adminss.get(i);
-            Log.d("create3", "Whiile admin: " +i + " " +admin.toString());
-            if(admin.getAdminName().equals(adminName)){
+            admin = adminss.get(i);
+            Log.d("create3", "Whiile admin: " + i + " " + admin.toString());
+            if (admin.getAdminName().equals(adminName)) {
 
-                adminIDs=adminss.get(i).getGroupIDs();
-                Log.d("create3", "adminIDs size: "+adminIDs);
+                adminIDs = adminss.get(i).getGroupIDs();
+                Log.d("create3", "adminIDs size: " + adminIDs);
 
-                while (j < adminIDs.size()){
-                    Log.d("create3", "Whiile j ID: "+adminIDs.get(j));
-                    if(adminIDs.get(j).equals(sessionID)){
+                while (j < adminIDs.size()) {
+                    Log.d("create3", "Whiile j ID: " + adminIDs.get(j));
+                    if (adminIDs.get(j).equals(sessionID)) {
                         return true;
                     }
                     j++;
@@ -240,8 +239,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isagoodadminname(String adminName) {
         int i = 0;
         while (i < admins.size()) {
-            Log.d("create", "Whiile ID"+admins.get(i));
-            if(admins.get(i).equals(adminName)){
+            Log.d("create", "Whiile ID" + admins.get(i));
+            if (admins.get(i).equals(adminName)) {
                 return false;
             }
             i++;
@@ -251,17 +250,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void setToastText(String text){
-        Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
-    }
 
-    public int getI() {
-        return i;
-    }
 
-    public void setI(int i) {
-        this.i = i;
-    }
 
     @Override
     protected void onStart() {
@@ -277,51 +267,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String adminName = " ";
                 adminss.clear();
                 Log.d("create1", "Adminname Snap");
-                for(DataSnapshot datas: dataSnapshot.getChildren()){
+                for (DataSnapshot datas : dataSnapshot.getChildren()) {
 
                     ArrayList<String> adminsID = new ArrayList<>();
-                    for (DataSnapshot datas2: datas.getChildren()){
-                        String adminIDG=datas2.getKey();
+                    for (DataSnapshot datas2 : datas.getChildren()) {
+                        String adminIDG = datas2.getKey();
                         adminsID.add(adminIDG);
                         Log.d("create2", "Adminname: " + adminIDG);
                     }
-                    adminName=datas.getKey();
+                    adminName = datas.getKey();
                     Log.d("create2", "AdminnameSnapID: " + adminName);
                     Log.d("create2", "AdminnameSnapID: " + adminsID);
 
-                    Admin newAdmin = new Admin (adminName,adminsID);
+                    Admin newAdmin = new Admin(adminName, adminsID);
 
                     Log.d("create2", "NewAdminName: " + newAdmin.getAdminName());
                     Log.d("create2", "NewAdminIDs: " + newAdmin.getGroupIDs());
                     adminss.add(newAdmin);
                     admins.add(adminName);
 
-
-                 //   Log.d("create2", "AdminnameSnap: " + adminss.get(getI()).toString()+" "+ getI());
-                  //  adminsID.clear();
                     setI(++i);
                 }
 
 
-
-
-
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
 
-
     }
-
-    public String getSessionid() {
-        return sessionid;
+    public void setI(int i) {
+        this.i = i;
     }
-
+    private void setToastText(String text) {
+        Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
+    }
     public void setSessionid(String sessionid) {
         this.sessionid = sessionid;
     }
-
 }

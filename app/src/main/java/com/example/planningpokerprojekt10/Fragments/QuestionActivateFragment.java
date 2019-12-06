@@ -1,25 +1,19 @@
 package com.example.planningpokerprojekt10.Fragments;
 
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.text.format.DateFormat;
-import android.widget.TimePicker;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.app.DatePickerDialog;
 import android.widget.DatePicker;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,8 +31,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,7 +81,8 @@ public class QuestionActivateFragment extends Fragment {
 
                         myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("true");
 
-                    } else
+                    }
+                    else
                         Log.d("create5", "IsModificaton Justone: " + justOneSwitch );
                         if (justOneSwitch <= 0) {
                             justOneSwitch=0;
@@ -93,8 +91,7 @@ public class QuestionActivateFragment extends Fragment {
 
                         myRef.child("Session").child("Groups").child(getSessionID()).child("Questions").child(getActiveQuestionID()).child("QuestionVisibility").setValue("false");
 
-                        // Toast.makeText(getActivity(),"Please select Just One Visibility Switch!",Toast.LENGTH_LONG).show();
-                    }
+                        }
                         else {
                             setToastText("Please select Just One Visibility Switch!");
                         }
@@ -189,7 +186,6 @@ public class QuestionActivateFragment extends Fragment {
                 public void onClick(View v) {
 
                     setDatePickedQuestionID(questions.get(position).getID());
-
                     new DatePickerDialog(getActivity(), setdate, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH)).show();
 
                 }
@@ -197,8 +193,6 @@ public class QuestionActivateFragment extends Fragment {
 
 
         }
-
-
 
         @Override
         public int getItemCount() {
@@ -208,8 +202,6 @@ public class QuestionActivateFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-
     }
 
     @Override
@@ -235,7 +227,7 @@ public class QuestionActivateFragment extends Fragment {
 
         }
     };
- public void setTime(){
+    public void setTime(){
     Calendar calendar = Calendar.getInstance();
         int HOUR = calendar.get(Calendar.HOUR);
         int MINUTE = calendar.get(Calendar.MINUTE);
