@@ -41,13 +41,27 @@
         android:id="@+id/textView11"
         android:layout_width="137dp"
         android:layout_height="30dp"
+        android:layout_marginTop="36dp"
+        android:text="MaxVoteNr."
+        android:textColor="@color/colorPrimary"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="137dp"
+        android:layout_height="30dp"
         android:text="Session ID"
         android:textColor="@color/colorPrimary"
         android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/editSessionID"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -71,7 +85,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:ems="10"
+        android:hint="Session/Group ID"
         android:inputType="number"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,19 +96,19 @@
         app:layout_constraintTop_toBottomOf="@+id/questionDescripEditText" />
 
     <EditText
-        android:id="@+id/maxUserNumber"
+        android:id="@+id/maxUserVoteNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="MaxUserNumber"
+        android:hint="MaxUserVoteNumber"
         android:inputType="number"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.545"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editSessionID" />
+        app:layout_constraintHorizontal_bias="0.818"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/questionDescripEditText"

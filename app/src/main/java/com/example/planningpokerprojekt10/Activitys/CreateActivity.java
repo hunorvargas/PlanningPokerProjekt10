@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class CreateActivity extends AppCompatActivity {
 
-    EditText editTexteditSessionID, editTextQuestion,editTextQuestionDesc,editMaxUserNameNumber;
+    EditText editTexteditSessionID, editTextQuestion,editTextQuestionDesc,editMaxUserVoteNumber;
     Button creatSessionButton;
     private String sessionid="",questionID="1";
     private Admin admin;
@@ -48,7 +48,7 @@ public class CreateActivity extends AppCompatActivity {
                 String question = editTextQuestion.getText().toString().trim();
                 String sessionId = editTexteditSessionID.getText().toString().trim();
                 String questionDescrpt=editTextQuestionDesc.getText().toString().trim();
-                String maxUserNumber=editMaxUserNameNumber.getText().toString().trim();
+                String maxUserVoteNumber=editMaxUserVoteNumber.getText().toString().trim();
 
                 setSessionid(editTexteditSessionID.getText().toString().trim());
 
@@ -56,7 +56,7 @@ public class CreateActivity extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference();
 
-                if(!question.isEmpty() && !maxUserNumber.isEmpty() ){
+                if(!question.isEmpty() && !maxUserVoteNumber.isEmpty() ){
 
                     Log.d("create1", "nem kell empty");
                     if(isagoodSessionID()) {
@@ -66,8 +66,8 @@ public class CreateActivity extends AppCompatActivity {
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionDesc").setValue(questionDescrpt);
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionVisibility").setValue("false");
                     myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("QuestionTime").setValue(" ");
+                    myRef.child("Session").child("Groups").child(sessionId).child("Questions").child(questionID).child("Results").child("MaxUserVoteNumber").setValue(maxUserVoteNumber);
                     myRef.child("Session").child("Admins").child(admin.getAdminName()).child(sessionId).setValue(sessionId);
-                    myRef.child("Session").child("Groups").child(sessionId).child("Users").child("MaxUsersNumber").setValue(maxUserNumber);
 
                     Log.d("create1", "nem kell data added");
 
@@ -111,7 +111,7 @@ public class CreateActivity extends AppCompatActivity {
         creatSessionButton =  findViewById(R.id.btnC);
         editTextQuestion = findViewById(R.id.editTextQuestion);
         editTextQuestionDesc=findViewById(R.id.questionDescripEditText);
-        editMaxUserNameNumber=findViewById(R.id.maxUserNumber);
+        editMaxUserVoteNumber=findViewById(R.id.maxUserVoteNumber);
         admin = new Admin();
 
         Intent intent= getIntent();
