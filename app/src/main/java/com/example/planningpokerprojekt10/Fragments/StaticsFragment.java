@@ -216,7 +216,10 @@ public class StaticsFragment extends Fragment {
 
                                             }
                                             else {
-                                                Log.d("create2", "CallRecycleviewDateTIme: " + currentDate.after(expireDate));
+                                                if(noDateTime){
+
+                                                }
+                                                else
                                                 if(question.getUsers().size()== maxvote || currentDate.after(expireDate) ) {
                                                     mrecyclerView.setAdapter(new RecyclerViewAdapter(question.getUsers()));
                                                     Log.d("create2", "CallRecycleviewDateTIme: " + question.getUsers());

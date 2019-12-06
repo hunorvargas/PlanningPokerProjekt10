@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (isagoodadminname(adminName)) {
                             setToastText("Welcome " + adminName + "!");
                             myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
-                            finish();
-                            startActivity(getIntent());
                         } else
                             setToastText("Admin Name is Busy!");
                     } else {
