@@ -51,7 +51,7 @@ public class RoomFragment extends Fragment {
 
 
     }
-
+    //Add new Question In Firebase
     private void addnewQuestion() {
         addnewQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +89,7 @@ public class RoomFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
     }
-
+    //Get questions IDs from firebase
     @Override
     public void onStart() {
         super.onStart();

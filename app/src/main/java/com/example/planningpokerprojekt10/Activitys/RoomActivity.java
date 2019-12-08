@@ -59,7 +59,7 @@ public class RoomActivity extends AppCompatActivity {
 
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) { // navigationBar listener
 
                 switch ((menuItem.getItemId())){
                     case R.id.roomIcon:
@@ -80,7 +80,7 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    private void setFragment(Fragment fragments) {
+    private void setFragment(Fragment fragments) {  // set the Active fragment from navgiation listener
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.framelayout,fragments);
         fragmentTransaction.commit();

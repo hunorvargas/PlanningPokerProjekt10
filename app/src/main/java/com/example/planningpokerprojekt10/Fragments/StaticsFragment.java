@@ -100,7 +100,7 @@ public class StaticsFragment extends Fragment {
             return new RecylerViewHolder(inflater,parent);
 
         }
-
+        //Display data in RecyclerView
         @Override
         public void onBindViewHolder(@NonNull final RecylerViewHolder holder, final int position) {
 
@@ -131,7 +131,7 @@ public class StaticsFragment extends Fragment {
     }
 
 
-    public void getDatas(){
+    public void getDatas(){ // Get Datas from Firebaase
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef1 = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
@@ -174,7 +174,7 @@ public class StaticsFragment extends Fragment {
                                                 String userName = datas.getKey();
                                                 String userVote;
                                                 Log.d("create2", "Childs: " + userName);
-                                                if(!userName.equals("MaxUserVoteNumber")){
+                                                if(!userName.equals("MaxUserVoteNumber")){ //check max Number OF Voters
                                                      userVote=datas.getValue().toString();
                                                     Log.d("create2", "Results: "+userName + " "+ userVote);
                                                      User user=new User(userName,userVote);

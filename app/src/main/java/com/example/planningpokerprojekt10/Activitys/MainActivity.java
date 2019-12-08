@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-
+        //3 buttons
         if (v == createAdminButton) {
 
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (!adminName.isEmpty()) {
                         Log.d("create1", "isempty");
 
-                        if (isagoodadminname(adminName)) {
+                        if (isagoodadminname(adminName)) { //check adminName Is not Busy and after add to Firebase
                             setToastText("Welcome " + adminName + "!");
                             myRef.child("Session").child("Admins").child(adminName).setValue(adminName);
                         } else
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             alertDialog.show();
         }
 
-        if (v == creatSessionButton) {
+        if (v == creatSessionButton) { // Creat Session Button
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             View view = getLayoutInflater().inflate(R.layout.loginadmin_dialog, null);
 
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (!adminName.isEmpty() && !sessionID.isEmpty()) {
                         Log.d("create1", "nameisempty");
 
-                        if (isagooddata(adminName, sessionID)) {
+                        if (isagooddata(adminName, sessionID)) {  // start Room Fragment
                             Log.d("create1", "joadmin");
                             intentRoom.putExtra("AdminName", adminName);
                             intentRoom.putExtra("SessionID", sessionID);
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean isagooddata(String adminName, String sessionID) {
+    private boolean isagooddata(String adminName, String sessionID) { //check admin Name
         Log.d("create3", "isagoodata");
         int i = 0;
         int j = 0;
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    protected void onStart() {
+    protected void onStart() { //get Datas From firevase Admin Names,
         super.onStart();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();

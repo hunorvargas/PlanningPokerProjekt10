@@ -49,7 +49,7 @@ public class QuestionActivateFragment extends Fragment {
     ArrayList<String> questionIDs = new ArrayList<>();
     private String SessionID,activeQuestionID,pickedTime,pickedDate,datePickedQuestionID;
     private int justOneSwitch=0;
-    private boolean isModification=false;
+    private boolean isModification=false,isActiveQuestion=false;
     private Button activateQuestion;
     private Calendar myCalendar = Calendar.getInstance();
 
@@ -62,18 +62,18 @@ public class QuestionActivateFragment extends Fragment {
        activateQuestion = mView.findViewById(R.id.activateQuestionButton);
 
        mrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-       getDatas();
+       getDatas(); // call Get datas Function from firebase
         return mView;
     }
 
-    private void activateQuestion() {
+    private void activateQuestion() {  // Activate Question Function on Button click
         activateQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("create5", "IsModificaton: " +isModification );
                 if(isModification) {
                     Log.d("create5", "IsModificaton Justone: " + justOneSwitch );
-                    if (justOneSwitch == 1) {
+                    if (justOneSwitch == 1 && isActiveQuestion) {
 
 
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -84,8 +84,9 @@ public class QuestionActivateFragment extends Fragment {
                     }
                     else
                         Log.d("create5", "IsModificaton Justone: " + justOneSwitch );
-                        if (justOneSwitch <= 0) {
+                        if (justOneSwitch <= 0 && !isActiveQuestion) {
                             justOneSwitch=0;
+                            //add data to firebase
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference();
 
@@ -96,6 +97,7 @@ public class QuestionActivateFragment extends Fragment {
                             setToastText("Please select Just One Visibility Switch!");
                         }
                 }
+
             }
 
 
@@ -144,7 +146,7 @@ public class QuestionActivateFragment extends Fragment {
             return new RecylerViewHolder(inflater,parent);
 
         }
-
+        //Display data in recycler view and set active question variables
         @Override
         public void onBindViewHolder(@NonNull final RecylerViewHolder holder, final int position) {
             Log.d("create1", "Fragment ViewHolder: " );
@@ -159,7 +161,10 @@ public class QuestionActivateFragment extends Fragment {
             }
             else {
                 holder.visibilitySwitch.setChecked(true);
+                isActiveQuestion=true;
+                if(justOneSwitch==0)
                 ++justOneSwitch;
+                else
                 Log.d("create5", "JustOneSwitch: " +justOneSwitch );
             }
            holder.visibilitySwitch.setOnClickListener(new View.OnClickListener() {
@@ -168,12 +173,14 @@ public class QuestionActivateFragment extends Fragment {
                     isModification=true;
                    if(holder.visibilitySwitch.isChecked()){
                        ++justOneSwitch;
+                       isActiveQuestion=true;
                        Log.d("create5", "JustOneSwitchIscheked: " +justOneSwitch );
                        setActiveQuestionID(questions.get(position).getID());
                        setToastText("Question Activated");
                    }
                    else {
                        --justOneSwitch;
+                       isActiveQuestion=false;
                        Log.d("create5", "JustOneSwitch: " +justOneSwitch );
                      setActiveQuestionID(questions.get(position).getID());
                        setToastText("Question DezActivated");
@@ -209,6 +216,7 @@ public class QuestionActivateFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
     }
+    //My DatePicker
 
     DatePickerDialog.OnDateSetListener setdate = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -227,7 +235,7 @@ public class QuestionActivateFragment extends Fragment {
 
         }
     };
-    public void setTime(){
+    public void setTime(){ // my Time Picker
     Calendar calendar = Calendar.getInstance();
         int HOUR = calendar.get(Calendar.HOUR);
         int MINUTE = calendar.get(Calendar.MINUTE);
@@ -257,7 +265,7 @@ public class QuestionActivateFragment extends Fragment {
     }
 
     public void getDatas(){
-
+        //get Datas from Firebase QuestionIDs,QUestion,Question Visibility
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef1 = database.getReference().child("Session").child("Groups").child(getSessionID()).child("Questions");
         Log.d("create1", "Question ID");
@@ -367,6 +375,7 @@ public class QuestionActivateFragment extends Fragment {
                             Log.d("create1", "Question: " + questiontime + " " + questions.toString());
                             mrecyclerView.setAdapter(new RecyclerViewAdapter(questions));
                             activateQuestion();
+                            // newRecycler View call activae Question Button;
                         }
 
                         @Override

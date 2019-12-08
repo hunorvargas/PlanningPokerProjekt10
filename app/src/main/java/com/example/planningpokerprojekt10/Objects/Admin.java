@@ -22,9 +22,6 @@ public class Admin {
         return groupIDs;
     }
 
-    public void setGroupIDs(ArrayList<String> groupIDs) {
-        this.groupIDs = groupIDs;
-    }
 
     public String getAdminName() {
         return adminName;

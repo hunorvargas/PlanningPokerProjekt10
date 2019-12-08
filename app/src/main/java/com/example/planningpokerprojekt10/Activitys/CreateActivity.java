@@ -34,7 +34,7 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        init();
+        init(); //init values and compontents
         creatSession();
 
     }
@@ -44,7 +44,7 @@ public class CreateActivity extends AppCompatActivity {
         creatSessionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {  // on buttton click veryfi if all fields is completed,insert data in Firebase
 
                 String question = editTextQuestion.getText().toString().trim();
                 String sessionId = editTexteditSessionID.getText().toString().trim();
@@ -87,7 +87,7 @@ public class CreateActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isagoodSessionID() {
+    private boolean isagoodSessionID() {  //check if the sessionID is not Busy
         Log.d("create", "kell isagoodsession");
 
         int i = 0;
@@ -105,7 +105,7 @@ public class CreateActivity extends AppCompatActivity {
     }
 
 
-    private void init() {
+    private void init() {  //init
 
         editTexteditSessionID = findViewById(R.id.editSessionID);
         creatSessionButton =  findViewById(R.id.btnC);
@@ -132,7 +132,7 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart() {  // on Start Get from Firebase Session IDs
         super.onStart();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
